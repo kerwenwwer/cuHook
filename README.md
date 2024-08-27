@@ -6,7 +6,10 @@ https://stackoverflow.com/questions/15599026/how-can-i-intercept-dlsym-calls-usi
 
 ## Usage
 ```bash
+# build the sample
 make
+
+# Run the sample
 LD_PRELOAD=/path/to/libcuhook.so.1 ./cuHook
 ```
 
