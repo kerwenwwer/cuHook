@@ -58,9 +58,13 @@ extern "C" { void* __libc_dlsym (void *map, const char *name); }
     } while (0)
 
 // We need to interpose dlsym since anyone using dlopen+dlsym to get the CUDA driver symbols will bypass
-// the hooking mechanism (this includes the CUDA runtime). Its tricky though, since if we replace the
-// real dlsym with ours, we can't dlsym() the real dlsym. To get around that, call the 'private'
-// libc interface called __libc_dlsym to get the real dlsym.
+// the hooking mechanism (this includes the CUDA runtime). It's tricky though, since if we replace the
+// real dlsym with ours, we can't use dlsym() to get the real dlsym without causing recursion.
+// To get around that, we use dlvsym() with RTLD_NEXT to get the next version of dlsym in the symbol
+// resolution order. This approach:
+// 1. Avoids recursion by not calling our own dlsym implementation.
+// 2. Ensures we get the correct version of dlsym for the current system.
+// 3. Is more portable and standardized compared to using the private __libc_dlsym interface.
 typedef void* (*fnDlsym)(void*, const char*);
 static void* real_dlsym(void *handle, const char* symbol)
 {
