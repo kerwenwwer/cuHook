@@ -6,7 +6,7 @@ https://stackoverflow.com/questions/15599026/how-can-i-intercept-dlsym-calls-usi
 
 ## Usage
 ```bash
-# build the sample
+# Build the sample
 make
 
 # Run the sample
